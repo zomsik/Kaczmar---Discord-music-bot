@@ -3,13 +3,11 @@ const{
   Attachement,
   Discord
 } = require('discord.js')
-const pomoc = require('./help');
-
 
 const bot = new Client();
 const ytdl = require("ytdl-core");
 
-const token = 'NzcxNTA2NjYxNzYwMTcyMDUz.X5tHkg.5UDPTYJNSFDBr_4uQjsWSpoJV0I';
+const token = '';
 const prefix = '!';
 var version = '1.0';
 var servers = {};
