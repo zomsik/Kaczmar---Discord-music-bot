@@ -24,6 +24,7 @@ bot.on('message', message => {
 
 
     case 'napierdalaj':
+      message.react('▶️');
       function napierdalaj(connection, message){
 
         var server = servers[message.guild.id];
@@ -125,7 +126,7 @@ bot.on('message', message => {
 
 
     case 'graj':
-
+      message.react('▶️');
       function play(connection, message){
         var server = servers[message.guild.id];
 
@@ -166,6 +167,7 @@ bot.on('message', message => {
       break;
 
       case 'help':
+        message.react('☑️');
         const komendy = {
           color: 0x0099ff,
           author: {
@@ -210,6 +212,7 @@ bot.on('message', message => {
       break;
 
       case 'future':
+        message.react('⏳');
         const komendyfuture = {
           color: 0x00FF00,
           author: {
@@ -261,11 +264,14 @@ bot.on('message', message => {
 
 
       case 'skip':
+        message.react('⏭️');
+
         var server = servers[message.guild.id];
         if(server.dispatcher) server.dispatcher.end();
       break;
 
       case 'stop':
+        message.react('⏹️');
         var server = servers[message.guild.id];
         if(message.guild.voice.connection){
           for(var i=server.queue.length -1; i>=0; i--){
