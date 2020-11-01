@@ -7,9 +7,10 @@ const{
 const bot = new Client();
 const ytdl = require("ytdl-core");
 
-//const token = '';
+const token = '';
 const prefix = '!';
 bot.login(process.env.token);
+//bot.login(token);
 
 var version = '1.0';
 var servers = {};
@@ -26,7 +27,6 @@ bot.on('message', message => {
 
 
     case 'napierdalaj':
-      message.react('▶️');
       function napierdalaj(connection, message){
 
         var server = servers[message.guild.id];
@@ -42,6 +42,15 @@ bot.on('message', message => {
 
       }
       
+      if (!message.member.voice.channel){
+        message.react('💢');
+        message.channel.send("wejdz na kanał, żebym napierdalał");
+        return;
+      }
+
+      message.react('▶️');
+
+
       if(args.length==1){
         var t=3;
 
@@ -105,10 +114,7 @@ bot.on('message', message => {
         args.push('https://www.youtube.com/watch?v=Tqp7boMFGhg');
       }
 
-      if (!message.member.voice.channel){
-        message.channel.send("wejdz na kanał, żebym napierdalał");
-        return;
-      }
+
       if(!servers[message.guild.id]) servers[message.guild.id] = {
         queue: []
       }
@@ -133,9 +139,10 @@ bot.on('message', message => {
         var server = servers[message.guild.id];
 
         server.dispatcher = connection.play(ytdl(server.queue[0], {filter: "audioonly"}));
-        server.queue.shift();
+        
 
         server.dispatcher.on("finish", () => {
+          server.queue.shift();
           if(server.queue[0]){
             play(connection, message);
           }else {
@@ -152,6 +159,7 @@ bot.on('message', message => {
       if (!message.member.voice.channel){
         message.channel.send("Wejdz na kanał, żebym grał");
         return;
+        
       }
       if(!servers[message.guild.id]) servers[message.guild.id] = {
         queue: []
@@ -164,7 +172,7 @@ bot.on('message', message => {
       if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
         play(connection, message);
       })
-
+    
 
       break;
 
