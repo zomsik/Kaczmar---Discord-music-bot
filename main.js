@@ -44,55 +44,55 @@ bot.on('message', message => {
         var t=5;
 
         message.channel.startTyping();
-        setTimeout(() => { message.channel.send("Tarararara"); 
+        setTimeout(() => { message.channel.send("Tarararara").then(msg => {msg.delete({ timeout: 13000});})
         message.channel.stopTyping();
         message.channel.startTyping();
-        }, 1000*t); 
+        }, 800*t); 
         t=t+1;
 
-        setTimeout(() => { message.channel.send("Tarararara"); 
+        setTimeout(() => { message.channel.send("Tarararara").then(msg => {msg.delete({ timeout: 12000});})
         message.channel.stopTyping();
         message.channel.startTyping();
       }, 1000*t); 
       t=t+1;
 
-        setTimeout(() => { message.channel.send("Taarararara"); 
+        setTimeout(() => { message.channel.send("Taarararara").then(msg => {msg.delete({ timeout: 11000});})
         message.channel.stopTyping();
         message.channel.startTyping();
       }, 1000*t); 
       t=t+1;       
 
-        setTimeout(() => { message.channel.send("Taarararara"); 
+        setTimeout(() => { message.channel.send("Taarararara").then(msg => {msg.delete({ timeout: 10000});})
         message.channel.stopTyping();
         message.channel.startTyping();
       }, 1000*t); 
       t=t+1;
 
-        setTimeout(() => { message.channel.send("Ararirarira"); 
+        setTimeout(() => { message.channel.send("Ararirarira").then(msg => {msg.delete({ timeout: 9000});})
         message.channel.stopTyping();
         message.channel.startTyping();
       }, 1000*t); 
       t=t+1;
 
-        setTimeout(() => { message.channel.send("Ararirarira"); 
+        setTimeout(() => { message.channel.send("Ararirarira").then(msg => {msg.delete({ timeout: 8000});})
         message.channel.stopTyping();
         message.channel.startTyping();
       }, 1100*t); 
       t=t+1;
 
-        setTimeout(() => { message.channel.send("Tara"); 
+        setTimeout(() => { message.channel.send("Tara").then(msg => {msg.delete({ timeout: 7000});})
         message.channel.stopTyping();
         message.channel.startTyping();
       }, 1100*t); 
       t=t+1;
 
-        setTimeout(() => { message.channel.send("Tara"); 
+        setTimeout(() => { message.channel.send("Tara").then(msg => {msg.delete({ timeout: 6000});})
         message.channel.stopTyping();
         message.channel.startTyping();
       }, 1100*t); 
       t=t+1;
 
-        setTimeout(() => { message.channel.send("Taraaa"); 
+        setTimeout(() => { message.channel.send("Taraaa").then(msg => {msg.delete({ timeout: 5000});})
         message.channel.stopTyping();
       }, 1100*t); 
 
