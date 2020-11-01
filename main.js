@@ -7,7 +7,7 @@ const{
 const bot = new Client();
 const ytdl = require("ytdl-core");
 
-const token = '';
+//const token = '';
 const prefix = '!';
 var version = '1.0';
 var servers = {};
