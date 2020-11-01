@@ -3,11 +3,11 @@ const{
   Attachement,
   Discord
 } = require('discord.js')
-
+const data = require('./data')
 const bot = new Client();
 const ytdl = require("ytdl-core");
 
-const token = '';
+//const token = '';
 const prefix = '!';
 bot.login(process.env.token);
 //bot.login(token);
@@ -24,8 +24,7 @@ bot.on('message', message => {
 
   switch(args[0]){
 
-
-
+    case 'Napierdalaj':
     case 'napierdalaj':
       function napierdalaj(connection, message){
 
@@ -132,7 +131,8 @@ bot.on('message', message => {
       })
       break;
 
-
+    case 'GRAJ':
+    case 'Graj':
     case 'graj':
       message.react('▶️');
       function play(connection, message){
@@ -176,6 +176,7 @@ bot.on('message', message => {
 
       break;
 
+      case 'Help':
       case 'help':
         message.react('☑️');
         const komendy = {
@@ -270,9 +271,79 @@ bot.on('message', message => {
 
       break;
 
+        case 'Losuj':
+        case 'losuj':
+
+
+          if (!message.member.voice.channel){
+            message.channel.send("Wejdz na kanał, żebym grał");
+            return;
+          }
+
+          if(!servers[message.guild.id]) servers[message.guild.id] = {
+            queue: []
+          }
+          message.react('🆗');
+
+          var server = servers[message.guild.id];
+    
+          var losuj = Math.floor(Math.random()*data.Utwory.length);
+
+          message.channel.send("Wylosowano "+ data.Utwory[losuj][1] + " z "+ data.Utwory.length + " wszystkich dostępnych utworów.");
+          server.queue.push(data.Utwory[losuj][1]);
+    
+          if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
+            play(connection, message);
+          })
 
 
 
+
+
+        break;
+
+      case 'All':
+      case 'all':
+        if (!message.member.voice.channel){
+          message.channel.send("Wejdz na kanał, żebym grał");
+          return;
+        }
+
+        if(!servers[message.guild.id]) servers[message.guild.id] = {
+          queue: []
+        }
+        message.react('🆗');
+
+        var server = servers[message.guild.id];
+
+        message.channel.send("Odtwarzam w kolejnosci losowej wszystkie " + data.Utwory.length + " dostępne utwory.");
+        allsongs= [...data.Utwory];
+        //var allsongs = data.Utwory.map(function(arr) {
+          //return arr.slice();
+        //});
+
+
+
+        for (var ran=0;ran<data.Utwory.length;ran++)
+        {
+          
+          var los = Math.floor(Math.random()*allsongs.length);
+
+          
+          server.queue.push(allsongs[los][1]);
+          allsongs.splice(los,1);
+
+
+        }
+
+        if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
+          play(connection, message);
+        })
+
+      break;
+
+
+      case 'Skip':
       case 'skip':
         message.react('⏭️');
 
@@ -280,6 +351,7 @@ bot.on('message', message => {
         if(server.dispatcher) server.dispatcher.end();
       break;
 
+      case 'Stop':
       case 'stop':
         message.react('⏹️');
         var server = servers[message.guild.id];
@@ -292,8 +364,36 @@ bot.on('message', message => {
         }
         if(message.guild.voice.connection) message.guild.voice.connection.disconnect();
       break;
+
+
+
       default:
-        if(args[0]=="Lala") message.channel.send("LALA")
+        for (var utw=0;utw<data.Utwory.length;utw++)
+        if(args[0].toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")==data.Utwory[utw][0])
+        {
+          if (!message.member.voice.channel){
+            message.channel.send("Wejdz na kanał, żebym grał");
+            return;
+          }
+
+          if(!servers[message.guild.id]) servers[message.guild.id] = {
+            queue: []
+          }
+          message.react('▶️');
+          var server = servers[message.guild.id];
+    
+          server.queue.push(data.Utwory[utw][1]);
+    
+          if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
+            play(connection, message);
+          })
+
+
+
+        }
+
+
+
         break;
 
   }
