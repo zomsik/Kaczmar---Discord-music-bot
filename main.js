@@ -9,6 +9,8 @@ const ytdl = require("ytdl-core");
 
 //const token = '';
 const prefix = '!';
+bot.login(process.env.token);
+
 var version = '1.0';
 var servers = {};
 
@@ -288,6 +290,4 @@ bot.on('message', message => {
 
   }
 
-
 });
-bot.login(token);

@@ -4,7 +4,8 @@
   "description": "Kaczmar",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node main.js"
   },
   "author": "zomsik",
   "license": "ISC",
@@ -16,5 +17,15 @@
     "fluent-ffmpeg": "^2.1.2",
     "opusscript": "0.0.7",
     "ytdl-core": "^4.0.0"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zomsik/Kaczmar---Discord-music-bot.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/zomsik/Kaczmar---Discord-music-bot/issues"
+  },
+  "homepage": "https://github.com/zomsik/Kaczmar---Discord-music-bot#readme"
 }
