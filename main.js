@@ -43,7 +43,7 @@ bot.on('message', message => {
       }
       
       if(args.length==1){
-        var t=5;
+        var t=3;
 
         message.channel.startTyping();
         setTimeout(() => { message.channel.send("Tarararara").then(msg => {msg.delete({ timeout: 13000});})
