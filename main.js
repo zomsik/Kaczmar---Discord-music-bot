@@ -244,7 +244,7 @@ bot.on('message', message => {
         const utworyembed = {
           color: 0xFFFF00,
           "title": "Pełna lista utworów",
-          "url": "https://kaczmar-discord-bot.herokuapp.com/",
+          "url": "https://kaczmar-website.herokuapp.com/",
           author: {
             name: 'Skróty głównych utworów',
           },
