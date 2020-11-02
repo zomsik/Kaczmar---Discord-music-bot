@@ -7,10 +7,10 @@ const data = require('./data')
 const bot = new Client();
 const ytdl = require("ytdl-core");
 
-//const token = '';
+const token = 'NzcyNDc0MTAzMTUyMTE1NzQz.X57Mkg.PN0Q9FgQfvrwZxpI8OAUOOt-bxk';
 const prefix = '!';
-bot.login(process.env.token);
-//bot.login(token);
+//bot.login(process.env.token);
+bot.login(token);
 
 var version = '1.0';
 var servers = {};
@@ -593,7 +593,7 @@ bot.on('message', message => {
 
       case 'Stop':
       case 'stop':
-        message.react('⏹️');
+       
         var server = servers[message.guild.id];
         if(message.guild.voice.connection){
           for(var i=server.queue.length -1; i>=0; i--){
@@ -601,6 +601,7 @@ bot.on('message', message => {
           }
           //server.dispatcher.end();
           message.channel.send("nara")
+          message.react('⏹️');
         }
         if(message.guild.voice.connection) message.guild.voice.connection.disconnect();
       break;
@@ -615,9 +616,8 @@ bot.on('message', message => {
         
         var server = servers[message.guild.id];
 
-
-
-        if(args[0].toLowerCase().normalize("NFD").replace("ł","l").replace(/[\u0300-\u036f]/g, "")=="nk")
+  
+        if(args[0].toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")=="nk")
         {
           if (!message.member.voice.channel){
             message.channel.send("Wejdz na kanał, żebym grał");
@@ -632,7 +632,7 @@ bot.on('message', message => {
 
 
         for (var utw=0;utw<data.Utwory.length;utw++)
-        if(args[0].toLowerCase().normalize("NFD").replace("ł","l").replace(/[\u0300-\u036f]/g, "")==data.Utwory[utw][0])
+        if(args[0].toLowerCase().normalize("NFD").replace(/ł/g,"l").replace(/[\u0300-\u036f]/g, "")==data.Utwory[utw][0])
         {
           if (!message.member.voice.channel){
             message.channel.send("Wejdz na kanał, żebym grał");
