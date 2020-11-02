@@ -198,6 +198,22 @@ bot.on('message', message => {
               value: "Gram jakiś utwór",
             },
             {
+              name: '!all',
+              value: "Gram wszystkie utwory w losowej kolejności",
+            },
+            {
+              name: '!losuj',
+              value: "Gram losowy utwór z bazy dostępnych utworów",
+            },
+            {
+              name: '!utwory',
+              value: "Wyświetlam skróty utworów",
+            },
+            {
+              name: '!<utwór>',
+              value: "Gram utwór na podstawie skrótu",
+            },
+            {
               name: '!skip',
               value: "Pomiń utwór",
             },
@@ -222,6 +238,240 @@ bot.on('message', message => {
 
       break;
 
+
+      case 'utwory':
+        message.react('🎶');
+        const utworyembed = {
+          color: 0xFFFF00,
+          "title": "Pełna lista utworów",
+          "url": "https://www.piosenkaztekstem.pl/spiewnik/jacek-kaczmarski/",
+          author: {
+            name: 'Skróty głównych utworów',
+          },
+          fields: [
+            {
+              name: '!1788',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!ambasadorowie',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!arka',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!boalkoholizmie',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!bwrzesniowa',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!blogoslawiezlo',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!blues',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!cromwell',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!dwierozmowy',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!dzieci',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!epitafium[j,s,jebaki]',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!grzechy',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!jasio',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!ja',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!jalta',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!kantyczka',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!kara',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!kariera',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!kmicic',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!kniaz',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!korespodencja',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!lekcja',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!limeryki',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!luter',
+              value: '\u200b',
+              inline: true,
+            },
+          ],
+        };
+        const utwory2embed = {
+          color: 0xFFFF00,
+          fields: [
+            {
+              name: '!mury[2]',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!naszaklasa[2]',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!oblaw[y,a,a2,a3,a4]',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!opowiesc',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!rejtan',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!requiem',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!sen',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!synagoga',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!spotkanie',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!stworzenie',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!syn',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!wloczedzy',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!wojna',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!wygnanie',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!strumienie',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!zbroja',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!zchlopakrol',
+              value: '\u200b',
+              inline: true,
+            },
+            {
+              name: '!zrodlo',
+              value: '\u200b',
+              inline: true,
+            },
+          ],
+          timestamp: new Date(),
+        };
+
+        message.channel.send({ embed: utworyembed });
+        message.channel.send({ embed: utwory2embed });
+      break;
+
       case 'future':
         message.react('⏳');
         const komendyfuture = {
@@ -241,14 +491,6 @@ bot.on('message', message => {
             {
               name: '!kolejka',
               value: "Wyświetlam listę utworów, które znajdują się w kolejce",
-            },
-            {
-              name: '!utwory',
-              value: "Wyświetlam skróty utworów",
-            },
-            {
-              name: '!<utwór>',
-              value: "Gram utwór na podstawie skrótu",
             },
             {
               name: '!tekst <utwór>',
@@ -295,8 +537,6 @@ bot.on('message', message => {
           if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
             play(connection, message);
           })
-
-
 
 
 
@@ -368,20 +608,39 @@ bot.on('message', message => {
 
 
       default:
+
+        if(!servers[message.guild.id]) servers[message.guild.id] = {
+          queue: []
+        }
+        
+        var server = servers[message.guild.id];
+
+
+
+        if(args[0].toLowerCase().normalize("NFD").replace("ł","l").replace(/[\u0300-\u036f]/g, "")=="nk")
+        {
+          if (!message.member.voice.channel){
+            message.channel.send("Wejdz na kanał, żebym grał");
+            return;
+          }
+          message.react('▶️');
+        server.queue.push('https://www.youtube.com/watch?v=aHtEm9sxzYg');
+        if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
+          play(connection, message);
+        })
+        }
+
+
         for (var utw=0;utw<data.Utwory.length;utw++)
-        if(args[0].toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")==data.Utwory[utw][0])
+        if(args[0].toLowerCase().normalize("NFD").replace("ł","l").replace(/[\u0300-\u036f]/g, "")==data.Utwory[utw][0])
         {
           if (!message.member.voice.channel){
             message.channel.send("Wejdz na kanał, żebym grał");
             return;
           }
 
-          if(!servers[message.guild.id]) servers[message.guild.id] = {
-            queue: []
-          }
+
           message.react('▶️');
-          var server = servers[message.guild.id];
-    
           server.queue.push(data.Utwory[utw][1]);
     
           if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
@@ -389,7 +648,7 @@ bot.on('message', message => {
           })
 
 
-
+          break;
         }
 
 
