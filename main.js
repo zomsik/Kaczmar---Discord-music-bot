@@ -1,14 +1,18 @@
 const{
   Client,
   Attachement,
-  Discord
+  Discord,
+  MessageEmbed
 } = require('discord.js')
 const data = require('./data')
 const bot = new Client();
 const ytdl = require("ytdl-core");
+const YouTube = require("discord-youtube-api");
 
-const token = '';
+
+
 const prefix = '!';
+const youtube = new YouTube(process.env.yttoken);
 bot.login(process.env.token);
 //bot.login(token);
 
@@ -173,6 +177,38 @@ bot.on('message', message => {
         play(connection, message);
       })
     
+
+      break;
+
+      case 'Kolejka':
+      case 'kolejka':
+          if(!servers[message.guild.id]) servers[message.guild.id] = {
+          queue: []
+          }
+  
+          var server = servers[message.guild.id];
+          message.react('☑️');
+
+          function titleofsong(kols)
+          {
+            var server = servers[message.guild.id];
+
+
+            youtube.getVideo(server.queue[kols]).then(video => {
+
+              message.channel.send(kols+1+". " + video.title).then(msg => {msg.delete({ timeout: 30000});})
+            
+            });
+          }
+
+
+        for(let kol=0;kol<server.queue.length;kol++)
+        {
+
+          setTimeout(function () {titleofsong(kol)}, 500*(kol+1));//
+      
+          if (kol>=9) break;
+        }
 
       break;
 
@@ -531,7 +567,10 @@ bot.on('message', message => {
     
           var losuj = Math.floor(Math.random()*data.Utwory.length);
 
-          message.channel.send("Wylosowano "+ data.Utwory[losuj][1] + " z "+ data.Utwory.length + " wszystkich dostępnych utworów.");
+          youtube.getVideo(data.Utwory[losuj][1]).then(video => {
+            message.channel.send(`Wylosowano ${video.title}` + " z "+ data.Utwory.length + " wszystkich dostępnych utworów.");
+          }).catch(message.channel.send);
+
           server.queue.push(data.Utwory[losuj][1]);
     
           if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
@@ -585,10 +624,20 @@ bot.on('message', message => {
 
       case 'Skip':
       case 'skip':
-        message.react('⏭️');
 
+        message.react('⏭️');
         var server = servers[message.guild.id];
+        if(!args[1]){
+          if(server.dispatcher) server.dispatcher.end();
+          return;
+        }
         if(server.dispatcher) server.dispatcher.end();
+        for (var sk=1;sk<args[1]-1;sk++)
+        {
+          server.queue.shift();
+          if (server.queue.length==0) break;
+        }
+
       break;
 
       case 'Stop':
