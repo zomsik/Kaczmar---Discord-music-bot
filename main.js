@@ -7,10 +7,10 @@ const data = require('./data')
 const bot = new Client();
 const ytdl = require("ytdl-core");
 
-const token = 'NzcyNDc0MTAzMTUyMTE1NzQz.X57Mkg.PN0Q9FgQfvrwZxpI8OAUOOt-bxk';
+const token = '';
 const prefix = '!';
-//bot.login(process.env.token);
-bot.login(token);
+bot.login(process.env.token);
+//bot.login(token);
 
 var version = '1.0';
 var servers = {};
