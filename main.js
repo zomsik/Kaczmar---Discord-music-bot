@@ -10,6 +10,7 @@ const ytdl = require("ytdl-core");
 const YouTube = require("discord-youtube-api");
 
 
+
 const prefix = '!';
 const youtube = new YouTube(process.env.yttoken);
 bot.login(process.env.token);
@@ -45,12 +46,12 @@ bot.on('message', message => {
       }
 
       function nvalidURL(str) {
-        var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-          '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
-          '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-          '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
-          '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
-          '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+        var pattern = new RegExp('^(https?:\\/\\/)?'+
+          '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ 
+          '((\\d{1,3}\\.){3}\\d{1,3}))'+ 
+          '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+
+          '(\\?[;&a-z\\d%_.~+=-]*)?'+
+          '(\\#[-a-z\\d_]*)?$','i');
         return !!pattern.test(str);
       }
 
@@ -151,44 +152,48 @@ bot.on('message', message => {
 
       if(args.length==1){
         server.queue.push('https://www.youtube.com/watch?v=Tqp7boMFGhg');
-      }
-    
-
-      if (!nvalidURL(args[1]))
-      {
-
-        youtube.searchVideos(nconcatsearch(args.length,args).toLowerCase().normalize("NFD").replace(/ł/g,"l").replace(/[\u0300-\u036f]/g, ""), 4).then(results => {
-          server.queue.push(results.url);
-          message.channel.send("Napierdalam: "+results.title);
-
-          if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
-            napierdalaj(connection, message);
-          })
-
-        });
-      }
-      else
-      {
-        server.queue.push(args[1]);
 
         if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
           napierdalaj(connection, message);
         })
+        break;
       }
+      else
+      {
+        if (!nvalidURL(args[1]))
+        {
+  
+          youtube.searchVideos(nconcatsearch(args.length,args).toLowerCase().normalize("NFD").replace(/ł/g,"l").replace(/[\u0300-\u036f]/g, ""), 4).then(results => {
+            server.queue.push(results.url);
+            message.channel.send("Napierdalam: "+results.title);
+  
+            if(!server.dispatcher) if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
+              napierdalaj(connection, message);
+            })
+  
+          });
+        }
+        else
+        {
+          server.queue.push(args[1]);
+  
+          if(!server.dispatcher) if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
+            napierdalaj(connection, message);
+          })
+        }
 
+      }
 
       break;
 
     case 'GRAJ':
     case 'Graj':
     case 'graj':
-      message.react('▶️');
       function play(connection, message){
         var server = servers[message.guild.id];
 
         server.dispatcher = connection.play(ytdl(server.queue[0], {filter: "audioonly"}));
-        
-
+    
         server.dispatcher.on("finish", () => {
           server.queue.shift();
           if(server.queue[0]){
@@ -202,12 +207,12 @@ bot.on('message', message => {
 
       
       function validURL(str) {
-        var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-          '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
-          '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-          '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
-          '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
-          '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+        var pattern = new RegExp('^(https?:\\/\\/)?'+ 
+          '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ 
+          '((\\d{1,3}\\.){3}\\d{1,3}))'+ 
+          '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ 
+          '(\\?[;&a-z\\d%_.~+=-]*)?'+ 
+          '(\\#[-a-z\\d_]*)?$','i');
         return !!pattern.test(str);
       }
 
@@ -226,10 +231,11 @@ bot.on('message', message => {
         return;
       }
       if (!message.member.voice.channel){
+        message.react('💢');
         message.channel.send("Wejdz na kanał, żebym grał");
         return;
-        
       }
+      message.react('▶️');
 
       if(!servers[message.guild.id]) servers[message.guild.id] = {
         queue: []
@@ -245,7 +251,7 @@ bot.on('message', message => {
           server.queue.push(results.url);
           message.channel.send("Gram: "+results.title);
 
-          if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
+          if(!server.dispatcher) if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
             play(connection, message);
           })
 
@@ -255,7 +261,7 @@ bot.on('message', message => {
       {
         server.queue.push(args[1]);
 
-        if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
+        if(!server.dispatcher) if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
           play(connection, message);
         })
       }
@@ -649,7 +655,7 @@ bot.on('message', message => {
 
           server.queue.push(data.Utwory[losuj][1]);
     
-          if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
+          if(!server.dispatcher) if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
             play(connection, message);
           })
 
@@ -688,7 +694,7 @@ bot.on('message', message => {
 
         }
 
-        if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
+        if(!server.dispatcher) if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
           play(connection, message);
         })
 
@@ -746,7 +752,7 @@ bot.on('message', message => {
           }
           message.react('▶️');
         server.queue.push('https://www.youtube.com/watch?v=aHtEm9sxzYg');
-        if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
+        if(!server.dispatcher) if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
           play(connection, message);
         })
         }
@@ -764,7 +770,7 @@ bot.on('message', message => {
           message.react('▶️');
           server.queue.push(data.Utwory[utw][1]);
     
-          if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
+          if(!server.dispatcher) if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
             play(connection, message);
           })
 
