@@ -10,13 +10,12 @@ const ytdl = require("ytdl-core");
 const YouTube = require("discord-youtube-api");
 
 
-
 const prefix = '!';
 const youtube = new YouTube(process.env.yttoken);
 bot.login(process.env.token);
-//bot.login(token);
+bot.login(token);
 
-var version = '1.0';
+var version = '2.0';
 var servers = {};
 
 bot.on('ready', () => {
@@ -44,6 +43,28 @@ bot.on('message', message => {
         });
 
       }
+
+      function nvalidURL(str) {
+        var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+          '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+          '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+          '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+          '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+          '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+        return !!pattern.test(str);
+      }
+
+      function nconcatsearch(len, str) {
+        var polaczone="";
+        for (var ll=1;ll<len;ll++)
+        {
+          polaczone = polaczone.concat(" ",str[ll]);
+        }
+        return polaczone;
+      }
+
+
+
       
       if (!message.member.voice.channel){
         message.react('💢');
@@ -112,27 +133,50 @@ bot.on('message', message => {
 
       }
 
-
-      if(args.length==1){
-        args.push('https://www.youtube.com/watch?v=Tqp7boMFGhg');
-      }
-
-
       if(!servers[message.guild.id]) servers[message.guild.id] = {
         queue: []
       }
 
       var server = servers[message.guild.id];
 
-
       for(var i=server.queue.length -1; i>=0; i--){
         server.queue.shift();
       }
-      server.queue.push(args[1]);
 
-      if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
-        napierdalaj(connection, message);
-      })
+
+ 
+
+
+
+
+      if(args.length==1){
+        server.queue.push('https://www.youtube.com/watch?v=Tqp7boMFGhg');
+      }
+    
+
+      if (!nvalidURL(args[1]))
+      {
+
+        youtube.searchVideos(nconcatsearch(args.length,args).toLowerCase().normalize("NFD").replace(/ł/g,"l").replace(/[\u0300-\u036f]/g, ""), 4).then(results => {
+          server.queue.push(results.url);
+          message.channel.send("Napierdalam: "+results.title);
+
+          if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
+            napierdalaj(connection, message);
+          })
+
+        });
+      }
+      else
+      {
+        server.queue.push(args[1]);
+
+        if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
+          napierdalaj(connection, message);
+        })
+      }
+
+
       break;
 
     case 'GRAJ':
@@ -156,6 +200,27 @@ bot.on('message', message => {
 
       }
 
+      
+      function validURL(str) {
+        var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+          '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+          '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+          '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+          '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+          '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+        return !!pattern.test(str);
+      }
+
+      function concatsearch(len, str) {
+        var polaczone="";
+        for (var ll=1;ll<len;ll++)
+        {
+          polaczone = polaczone.concat(" ",str[ll]);
+        }
+        return polaczone;
+      }
+
+
       if(!args[1]){
         message.channel.send("Ale co mam zagrać?");
         return;
@@ -165,17 +230,38 @@ bot.on('message', message => {
         return;
         
       }
+
       if(!servers[message.guild.id]) servers[message.guild.id] = {
         queue: []
       }
 
       var server = servers[message.guild.id];
 
-      server.queue.push(args[1]);
 
-      if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
-        play(connection, message);
-      })
+
+      if (!validURL(args[1]))
+      {
+        youtube.searchVideos(concatsearch(args.length,args).toLowerCase().normalize("NFD").replace(/ł/g,"l").replace(/[\u0300-\u036f]/g, ""), 4).then(results => {
+          server.queue.push(results.url);
+          message.channel.send("Gram: "+results.title);
+
+          if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
+            play(connection, message);
+          })
+
+        });
+      }
+      else
+      {
+        server.queue.push(args[1]);
+
+        if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
+          play(connection, message);
+        })
+      }
+
+
+
     
 
       break;
@@ -226,12 +312,16 @@ bot.on('message', message => {
               value: "Napierdalam dziedzictwo narodowe",
             },
             {
-              name: '!napierdalaj <link>',
+              name: '!napierdalaj <nazwa/link>',
               value: "Napierdalam coś innego",
             },
             {
-              name: '!graj <link>',
+              name: '!graj <nazwa/link>',
               value: "Gram jakiś utwór",
+            },
+            {
+              name: '!kolejka',
+              value: "Wyświetlam listę utworów, które znajdują się w kolejce",
             },
             {
               name: '!all',
@@ -250,8 +340,8 @@ bot.on('message', message => {
               value: "Gram utwór na podstawie skrótu",
             },
             {
-              name: '!skip',
-              value: "Pomiń utwór",
+              name: '!skip / !skip n',
+              value: "Pomijam utwór / Pomijam utwory do znajdącego się na \"n\" miejscu",
             },
             {
               name: '!stop',
@@ -260,11 +350,7 @@ bot.on('message', message => {
             {
               name: '!help',
               value: "Wypisuje znowu to samo",
-            },
-            {
-              name: '!future',
-              value: "Wypisuje komendy planowane do dodania",
-            },            
+            },         
           ],
           timestamp: new Date(),
         };
@@ -524,22 +610,12 @@ bot.on('message', message => {
               name: '!volume <0-100>',
               value: "Zmieniam głośność",
             },
-            {
-              name: '!kolejka',
-              value: "Wyświetlam listę utworów, które znajdują się w kolejce",
-            },
+
             {
               name: '!tekst <utwór>',
               value: "Wyświetlam tekst utworu",
             },
-            {
-              name: '!graj <nazwa>',
-              value: "Wyszukuję i gram utwór",
-            },
-            {
-              name: '!napierdalaj <nazwa>',
-              value: "Wyszukuję i napierdalam utwór",
-            },
+
           ],
           timestamp: new Date(),
         };
@@ -597,9 +673,6 @@ bot.on('message', message => {
 
         message.channel.send("Odtwarzam w kolejnosci losowej wszystkie " + data.Utwory.length + " dostępne utwory.");
         allsongs= [...data.Utwory];
-        //var allsongs = data.Utwory.map(function(arr) {
-          //return arr.slice();
-        //});
 
 
 
@@ -620,7 +693,6 @@ bot.on('message', message => {
         })
 
       break;
-
 
       case 'Skip':
       case 'skip':
