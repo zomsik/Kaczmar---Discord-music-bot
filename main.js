@@ -13,7 +13,7 @@ const YouTube = require("discord-youtube-api");
 const prefix = '!';
 const youtube = new YouTube(process.env.yttoken);
 bot.login(process.env.token);
-bot.login(token);
+//bot.login(token);
 
 var version = '2.0';
 var servers = {};
