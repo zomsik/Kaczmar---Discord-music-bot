@@ -10,10 +10,12 @@ const ytdl = require("ytdl-core");
 const YouTube = require("discord-youtube-api");
 
 
-const prefix = '!';
+const token = process.env.token;
 const youtube = new YouTube(process.env.yttoken);
-bot.login(process.env.token);
-//bot.login(token);
+
+
+const prefix = '!';
+bot.login(token);
 
 var version = '2.0';
 var servers = {};
@@ -39,6 +41,7 @@ bot.on('message', message => {
             napierdalaj(connection, message);
           }else {
             connection.disconnect();
+
           }
         });
 
@@ -151,30 +154,37 @@ bot.on('message', message => {
 
       if(args.length==1){
         server.queue.push('https://www.youtube.com/watch?v=Tqp7boMFGhg');
-      }
-    
-
-      if (!nvalidURL(args[1]))
-      {
-
-        youtube.searchVideos(nconcatsearch(args.length,args).toLowerCase().normalize("NFD").replace(/ł/g,"l").replace(/[\u0300-\u036f]/g, ""), 4).then(results => {
-          server.queue.push(results.url);
-          message.channel.send("Napierdalam: "+results.title);
-
-          if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
-            napierdalaj(connection, message);
-          })
-
-        });
-      }
-      else
-      {
-        server.queue.push(args[1]);
-
         if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
           napierdalaj(connection, message);
         })
       }
+      else
+      {
+        if (!nvalidURL(args[1]))
+        {
+  
+          youtube.searchVideos(nconcatsearch(args.length,args).toLowerCase().normalize("NFD").replace(/ł/g,"l").replace(/[\u0300-\u036f]/g, ""), 4).then(results => {
+            server.queue.push(results.url);
+            message.channel.send("Napierdalam: "+results.title);
+  
+            if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
+              napierdalaj(connection, message);
+            })
+  
+          });
+        }
+        else
+        {
+          server.queue.push(args[1]);
+  
+          if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
+            napierdalaj(connection, message);
+          })
+        }
+  
+      }
+    
+
 
 
       break;
@@ -720,11 +730,14 @@ bot.on('message', message => {
           for(var i=server.queue.length -1; i>=0; i--){
             server.queue.splice(i,1);
           }
-          //server.dispatcher.end();
-          message.channel.send("nara")
           message.react('⏹️');
+          if(server.dispatcher) server.dispatcher.end();
         }
         if(message.guild.voice.connection) message.guild.voice.connection.disconnect();
+        
+        
+
+
       break;
 
 

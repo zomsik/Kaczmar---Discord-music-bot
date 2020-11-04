@@ -1,12 +1,14 @@
 {
   "name": "discordbot",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Kaczmar",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node main.js"
   },
+
+
   "author": "zomsik",
   "license": "ISC",
   "dependencies": {
