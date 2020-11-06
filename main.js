@@ -9,10 +9,8 @@ const bot = new Client();
 const ytdl = require("ytdl-core");
 const YouTube = require("discord-youtube-api");
 
-const youtube = new YouTube("AIzaSyDYa47TbBz6hTMf8R5q5QuYGSawE2XXz54");
-const token = "NzcyNDc0MTAzMTUyMTE1NzQz.X57Mkg.kXQErgTOXriQXMUT7XQt66CE_BQ";
-//const token = process.env.token;
-//const youtube = new YouTube(process.env.yttoken);
+const token = process.env.token;
+const youtube = new YouTube(process.env.yttoken);
 
 let sprawdzaj =0;
 const prefix = '!';
