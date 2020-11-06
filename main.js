@@ -9,11 +9,12 @@ const bot = new Client();
 const ytdl = require("ytdl-core");
 const YouTube = require("discord-youtube-api");
 
+const youtube = new YouTube("AIzaSyDYa47TbBz6hTMf8R5q5QuYGSawE2XXz54");
+const token = "NzcyNDc0MTAzMTUyMTE1NzQz.X57Mkg.kXQErgTOXriQXMUT7XQt66CE_BQ";
+//const token = process.env.token;
+//const youtube = new YouTube(process.env.yttoken);
 
-const token = process.env.token;
-const youtube = new YouTube(process.env.yttoken);
-
-
+let sprawdzaj =0;
 const prefix = '!';
 bot.login(token);
 
@@ -23,6 +24,14 @@ var servers = {};
 bot.on('ready', () => {
   console.log('gotowy');
 })
+
+
+
+
+
+
+
+
 
 bot.on('message', message => {
   let args = message.content.substring(prefix.length).split(" ");
@@ -155,7 +164,12 @@ bot.on('message', message => {
       if(args.length==1){
         server.queue.push('https://www.youtube.com/watch?v=Tqp7boMFGhg');
         if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
-          napierdalaj(connection, message);
+          play(connection, message);
+          if (sprawdzaj==0)
+          {
+            napierdalaj(connection, message);
+          }
+          sprawdzaj=1;
         })
       }
       else
@@ -169,6 +183,11 @@ bot.on('message', message => {
   
             if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
               napierdalaj(connection, message);
+              if (sprawdzaj==0)
+              {
+                sprawdzajf(connection, message);
+              }
+              sprawdzaj=1;
             })
   
           });
@@ -179,6 +198,11 @@ bot.on('message', message => {
   
           if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
             napierdalaj(connection, message);
+            if (sprawdzaj==0)
+            {
+              sprawdzajf(connection, message);
+            }
+            sprawdzaj=1;
           })
         }
   
@@ -196,6 +220,10 @@ bot.on('message', message => {
       function play(connection, message){
         var server = servers[message.guild.id];
 
+        youtube.getVideo(server.queue[0]).then(video => {
+          message.channel.send(`Gram: ${video.title}`);
+        }).catch(message.channel.send);
+
         server.dispatcher = connection.play(ytdl(server.queue[0], {filter: "audioonly"}));
         
 
@@ -209,6 +237,34 @@ bot.on('message', message => {
         });
 
       }
+
+
+
+
+      function sprawdzajf(connection,message){
+        var server = servers[message.guild.id];
+      
+        setTimeout(function()
+        { 
+
+          //console.log(connection.on('speaking'));
+          if (server.queue.length>0)
+          {
+
+
+            if(!message.guild.voice.channel)
+            {
+                message.member.voice.channel.join().then(function(connection){
+                play(connection, message);
+              })
+            } 
+          }
+      
+        sprawdzajf(connection,message);
+        }, 1000);
+      
+      }
+
 
       
       function validURL(str) {
@@ -249,14 +305,19 @@ bot.on('message', message => {
 
 
 
+
       if (!validURL(args[1]))
       {
         youtube.searchVideos(concatsearch(args.length,args).toLowerCase().normalize("NFD").replace(/ł/g,"l").replace(/[\u0300-\u036f]/g, ""), 4).then(results => {
           server.queue.push(results.url);
-          message.channel.send("Gram: "+results.title);
 
-          if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
+          if(!server.dispatcher) if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
             play(connection, message);
+            if (sprawdzaj==0)
+            {
+              sprawdzajf(connection, message);
+            }
+            sprawdzaj=1;
           })
 
         });
@@ -265,8 +326,13 @@ bot.on('message', message => {
       {
         server.queue.push(args[1]);
 
-        if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
+        if(!server.dispatcher) if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
           play(connection, message);
+          if (sprawdzaj==0)
+          {
+            sprawdzajf(connection, message);
+          }
+          sprawdzaj=1;
         })
       }
 
@@ -653,14 +719,17 @@ bot.on('message', message => {
     
           var losuj = Math.floor(Math.random()*data.Utwory.length);
 
-          youtube.getVideo(data.Utwory[losuj][1]).then(video => {
-            message.channel.send(`Wylosowano ${video.title}` + " z "+ data.Utwory.length + " wszystkich dostępnych utworów.");
-          }).catch(message.channel.send);
+
 
           server.queue.push(data.Utwory[losuj][1]);
     
-          if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
+          if(!server.dispatcher) if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
             play(connection, message);
+            if (sprawdzaj==0)
+            {
+              sprawdzajf(connection, message);
+            }
+            sprawdzaj=1;
           })
 
 
@@ -698,8 +767,13 @@ bot.on('message', message => {
 
         }
 
-        if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
+        if(!server.dispatcher) if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
           play(connection, message);
+          if (sprawdzaj==0)
+          {
+            sprawdzajf(connection, message);
+          }
+          sprawdzaj=1;
         })
 
       break;
@@ -707,18 +781,26 @@ bot.on('message', message => {
       case 'Skip':
       case 'skip':
 
-        message.react('⏭️');
+        
         var server = servers[message.guild.id];
         if(!args[1]){
+          message.react('⏭️');
           if(server.dispatcher) server.dispatcher.end();
           return;
         }
-        if(server.dispatcher) server.dispatcher.end();
-        for (var sk=1;sk<args[1]-1;sk++)
+        else
         {
-          server.queue.shift();
-          if (server.queue.length==0) break;
+
+          if (!isNaN(args[1]))
+          message.react('⏭️');
+          if(server.dispatcher) server.dispatcher.end();
+          for (var sk=1;sk<args[1]-1;sk++)
+          {
+            server.queue.shift();
+            if (server.queue.length==0) return;
+          }
         }
+
 
       break;
 
@@ -759,8 +841,13 @@ bot.on('message', message => {
           }
           message.react('▶️');
         server.queue.push('https://www.youtube.com/watch?v=aHtEm9sxzYg');
-        if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
+        if(!server.dispatcher) if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
           play(connection, message);
+          if (sprawdzaj==0)
+          {
+            sprawdzajf(connection, message);
+          }
+          sprawdzaj=1;
         })
         }
 
@@ -777,8 +864,13 @@ bot.on('message', message => {
           message.react('▶️');
           server.queue.push(data.Utwory[utw][1]);
     
-          if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
+          if(!server.dispatcher) if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
             play(connection, message);
+            if (sprawdzaj==0)
+            {
+              sprawdzajf(connection, message);
+            }
+            sprawdzaj=1;
           })
 
 
