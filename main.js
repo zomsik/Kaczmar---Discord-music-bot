@@ -9,10 +9,12 @@ const bot = new Client();
 const ytdl = require("ytdl-core");
 const YouTube = require("discord-youtube-api");
 
+
 const token = process.env.token;
 const youtube = new YouTube(process.env.yttoken);
 
 let sprawdzaj =0;
+let notplayed = 0;
 const prefix = '!';
 bot.login(token);
 
@@ -219,7 +221,7 @@ bot.on('message', message => {
         var server = servers[message.guild.id];
 
         youtube.getVideo(server.queue[0]).then(video => {
-          message.channel.send(`Gram: ${video.title}`);
+          message.channel.send(`Gram: ${video.title}`).then(msg => {msg.delete({ timeout: 20000});})
         }).catch(message.channel.send);
 
         server.dispatcher = connection.play(ytdl(server.queue[0], {filter: "audioonly"}));
@@ -244,11 +246,24 @@ bot.on('message', message => {
       
         setTimeout(function()
         { 
-
-          //console.log(connection.on('speaking'));
           if (server.queue.length>0)
           {
+            if (server.dispatcher.streamTime==0)
+            {
+              notplayed= notplayed + 1;
+              if (notplayed==10)
+              {
+                notplayed=0;
+                play(connection, message);
+              }
 
+            }
+            if (server.dispatcher.streamTime>0 && notplayed!=0)
+            {
+              notplayed=0;
+            }
+
+           
 
             if(!message.guild.voice.channel)
             {
@@ -308,8 +323,15 @@ bot.on('message', message => {
       {
         youtube.searchVideos(concatsearch(args.length,args).toLowerCase().normalize("NFD").replace(/ł/g,"l").replace(/[\u0300-\u036f]/g, ""), 4).then(results => {
           server.queue.push(results.url);
+          if (server.queue.length>1)
+          {
+            message.channel.send(`Zakolejkowano: ${results.url}`).then(msg => {msg.delete({ timeout: 10000});})
+          }
+
+
 
           if(!server.dispatcher) if(!message.guild.voiceChannel) message.member.voice.channel.join().then(function(connection){
+            
             play(connection, message);
             if (sprawdzaj==0)
             {
