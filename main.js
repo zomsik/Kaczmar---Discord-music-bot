@@ -251,6 +251,7 @@ bot.on('message', message => {
             if (server.dispatcher.streamTime==0)
             {
               notplayed= notplayed + 1;
+              brakdispatchera= brakdispatchera +1;
               if (notplayed==10)
               {
                 notplayed=0;
@@ -258,12 +259,11 @@ bot.on('message', message => {
               }
 
             }
-            if (server.dispatcher.streamTime>0 && notplayed!=0)
+            if ((server.dispatcher.streamTime>0 && notplayed!=0) || (server.dispatcher.streamTime>0 && brakdispatchera!=0))
             {
+              brakdispatchera=0;
               notplayed=0;
             }
-
-           
 
             if(!message.guild.voice.channel)
             {
@@ -272,7 +272,8 @@ bot.on('message', message => {
               })
             }
             
-            if(!server.dispatcher){
+            if(!server.dispatcher && server.dispatcher.streamTime==0 && brakdispatchera==10){
+              brakdispatchera=0;
             play(connection, message);
           }
         }
