@@ -15,7 +15,6 @@ const youtube = new YouTube(process.env.yttoken);
 
 let sprawdzaj =0;
 let notplayed = 0;
-let brakdispatchera=0;
 const prefix = '!';
 bot.login(token);
 
@@ -252,7 +251,6 @@ bot.on('message', message => {
             if (server.dispatcher.streamTime==0)
             {
               notplayed= notplayed + 1;
-              brakdispatchera= brakdispatchera +1;
               if (notplayed==10)
               {
                 notplayed=0;
@@ -260,9 +258,9 @@ bot.on('message', message => {
               }
 
             }
-            if ((server.dispatcher.streamTime>0 && notplayed!=0) || (server.dispatcher.streamTime>0 && brakdispatchera!=0))
+            if (server.dispatcher.streamTime>0 && notplayed!=0) 
             {
-              brakdispatchera=0;
+
               notplayed=0;
             }
 
@@ -273,8 +271,7 @@ bot.on('message', message => {
               })
             }
             
-            if(!server.dispatcher && server.dispatcher.streamTime==0 && brakdispatchera==10){
-              brakdispatchera=0;
+            if(!server.dispatcher){
             play(connection, message);
           }
         }
