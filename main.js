@@ -15,6 +15,7 @@ const youtube = new YouTube(process.env.yttoken);
 
 let sprawdzaj =0;
 let notplayed = 0;
+let brakdispatchera=0;
 const prefix = '!';
 bot.login(token);
 
