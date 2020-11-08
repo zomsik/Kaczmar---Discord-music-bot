@@ -270,8 +270,12 @@ bot.on('message', message => {
                 message.member.voice.channel.join().then(function(connection){
                 play(connection, message);
               })
-            } 
+            }
+            
+            if(!server.dispatcher){
+            play(connection, message);
           }
+        }
       
         sprawdzajf(connection,message);
         }, 1000);
